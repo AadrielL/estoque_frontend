@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Enxoval Hospitalar</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Controle de Enxoval Hospitalar</h1>
+
+<div id="hospitais-container">
+
+  <div class="hospital-card" data-hospital="Hospital Medical" onclick="selecionarHospital('Hospital Medical')">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnJxvWpINpzmVdqfVj2e01vpK470wNPjoA4g&s" alt="Hospital Medical" />
+    <p>Hospital Medical</p>
+  </div>
+
+  <div class="hospital-card" data-hospital="Hospital Unimed" onclick="selecionarHospital('Hospital Unimed')">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgbmrJr0axBipY4R5r79bCud-74_IY4zMJ2g&s" alt="Hospital Unimed" />
+    <p>Hospital Unimed</p>
+  </div>
+
+  <div class="hospital-card" data-hospital="Hospital Dona Regina" onclick="selecionarHospital('Hospital Dona Regina')">
+    <img src="https://www.jornaldotocantins.com.br/image/policy:1.3194242:1730467407/image.jpg" alt="Hospital Dona Regina" />
+    <p>Hospital Dona Regina</p>
+  </div>
+
+  <!-- Hospitais novos -->
+  <div class="hospital-card" data-hospital="Hospital 1" onclick="selecionarHospital('Hospital 1')">
+    <img src="https://via.placeholder.com/300x200?text=Hospital+1" alt="Hospital 1" />
+    <p>Hospital 1</p>
+  </div>
+
+  <div class="hospital-card" data-hospital="Hospital 2" onclick="selecionarHospital('Hospital 2')">
+    <img src="https://via.placeholder.com/300x200?text=Hospital+2" alt="Hospital 2" />
+    <p>Hospital 2</p>
+  </div>
+
+  <div class="hospital-card" data-hospital="Hospital 3" onclick="selecionarHospital('Hospital 3')">
+    <img src="https://via.placeholder.com/300x200?text=Hospital+3" alt="Hospital 3" />
+    <p>Hospital 3</p>
+  </div>
+
+  <div class="hospital-card" data-hospital="Hospital 4" onclick="selecionarHospital('Hospital 4')">
+    <img src="https://via.placeholder.com/300x200?text=Hospital+4" alt="Hospital 4" />
+    <p>Hospital 4</p>
+  </div>
+
+  <div class="hospital-card" data-hospital="Hospital 5" onclick="selecionarHospital('Hospital 5')">
+    <img src="https://via.placeholder.com/300x200?text=Hospital+5" alt="Hospital 5" />
+    <p>Hospital 5</p>
+  </div>
+
+  <div class="hospital-card" data-hospital="Hospital 6" onclick="selecionarHospital('Hospital 6')">
+    <img src="https://via.placeholder.com/300x200?text=Hospital+6" alt="Hospital 6" />
+    <p>Hospital 6</p>
+  </div>
+
+  <div class="hospital-card" data-hospital="Hospital 2" onclick="selecionarHospital('Hospital 2')">
+    <img src="https://via.placeholder.com/300x200?text=Hospital+2" alt="Hospital 2" />
+    <p>Hospital 2</p>
+  </div>
+
+  <div class="hospital-card" data-hospital="Hospital 3" onclick="selecionarHospital('Hospital 3')">
+    <img src="https://via.placeholder.com/300x200?text=Hospital+3" alt="Hospital 3" />
+    <p>Hospital 3</p>
+  </div>
+
+  <div class="hospital-card" data-hospital="Hospital 4" onclick="selecionarHospital('Hospital 4')">
+    <img src="https://via.placeholder.com/300x200?text=Hospital+4" alt="Hospital 4" />
+    <p>Hospital 4</p>
+  </div>
+
+  <div class="hospital-card" data-hospital="Hospital 5" onclick="selecionarHospital('Hospital 5')">
+    <img src="https://via.placeholder.com/300x200?text=Hospital+5" alt="Hospital 5" />
+    <p>Hospital 5</p>
+  </div>
+
+  <div class="hospital-card" data-hospital="Hospital 6" onclick="selecionarHospital('Hospital 6')">
+    <img src="https://via.placeholder.com/300x200?text=Hospital+6" alt="Hospital 6" />
+    <p>Hospital 6</p>
+  </div>
+
+</div>
+
+<script>
+  function selecionarHospital(nomeHospital) {
+    window.location.href = `estoque.html?hospital=${encodeURIComponent(nomeHospital)}`;
+  }
+</script>
+
+</body>
+</html>

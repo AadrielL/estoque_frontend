@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estoque do Hospital</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <a href="index.html" class="btn-voltar">← Voltar para Hospitais</a>
+
+ 
+
+
+<h1 id="titulo-hospital">Estoque</h1>
+<div style="text-align: center; margin: 20px 0;">
+  <a id="btnAdicionar" class="btn-adicionar" href="adicionar.html">+ Adicionar Produto</a>
+</div>
+
+<div id="estoque-container">
+  <!-- Aqui os produtos vão ser carregados -->
+</div>
+
+<script>
+const API_URL = "http://localhost:8080/estoque";
+
+// Função para pegar o hospital da URL
+function getHospitalDaUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('hospital');
+}
+
+// Carregar o estoque do hospital
+async function carregarEstoque() {
+  const hospital = getHospitalDaUrl();
+  if (!hospital) {
+    document.getElementById('titulo-hospital').textContent = 'Hospital não encontrado';
+    return;
+  }
+
+  document.getElementById('titulo-hospital').textContent = `Estoque do ${hospital}`;
+
+  try {
+    const response = await fetch(`${API_URL}/hospital/${encodeURIComponent(hospital)}`);
+    const estoque = await response.json();
+    const container = document.getElementById('estoque-container');
+    container.innerHTML = '';
+
+    if (estoque.length === 0) {
+      container.innerHTML = '<p>Não há itens cadastrados para este hospital.</p>';
+      return;
+    }
+
+    estoque.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'item-estoque';
+      div.innerHTML = `
+        <h3>${item.nome}</h3>
+        <p>Quantidade: ${item.quantidade}</p>
+        <p>Categoria: ${item.categoria ? item.categoria : 'Sem categoria'}</p>
+        <div class="acoes-estoque">
+          <a href="adicionar.html?hospital=${encodeURIComponent(hospital)}&editar=${item.id}" class="btn-editar">Editar</a>
+          <button onclick="deletarProduto(${item.id})" class="btn-excluir">Excluir</button>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+
+  } catch (error) {
+    console.error('Erro ao carregar estoque:', error);
+    document.getElementById('estoque-container').innerHTML = '<p>Erro ao carregar o estoque.</p>';
+  }
+}
+
+// Função para deletar um item
+async function deletarProduto(id) {
+  if (!confirm("Tem certeza que deseja excluir este item?")) {
+    return;
+  }
+
+  try {
+    await fetch(`${API_URL}/${id}`, {
+      method: "DELETE"
+    });
+    carregarEstoque(); // Recarrega após deletar
+  } catch (error) {
+    console.error('Erro ao deletar produto:', error);
+    alert('Erro ao excluir o produto.');
+  }
+}
+
+// Quando a página carregar
+document.addEventListener("DOMContentLoaded", carregarEstoque);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adicionar ou Editar Item</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<a href="index.html" class="btn-voltar">← Voltar para Hospitais</a>
+
+<h1 id="tituloPagina">Adicionar Item ao Estoque</h1>
+
+<form id="formAdicionar">
+  <div id="hospitalSelectDiv">
+    <label for="hospital">Selecione o Hospital:</label>
+    <select id="hospital" name="hospital" required>
+      <option value="">Selecione...</option>
+      <option value="Hospital Medical">Hospital Medical</option>
+      <option value="Hospital Unimed">Hospital Unimed</option>
+      <option value="Hospital Dona Regina">Hospital Dona Regina</option>
+      <option value="Hospital 1">Hospital 1</option>
+      <option value="Hospital 2">Hospital 2</option>
+      <option value="Hospital 3">Hospital 3</option>
+      <option value="Hospital 4">Hospital 4</option>
+      <option value="Hospital 5">Hospital 5</option>
+      <option value="Hospital 6">Hospital 6</option>
+    </select>
+  </div>
+
+  <label for="categoria">Categoria:</label>
+  <select id="categoria" name="categoria" required>
+    <option value="">Selecione...</option>
+    <option value="Roupa de Cama">Roupa de Cama</option>
+    <option value="Toalhas">Toalhas</option>
+    <option value="Uniformes">Uniformes</option>
+    <option value="Cobertores">Cobertores</option>
+    <option value="Outros">Outros</option>
+  </select>
+
+  <label for="nome">Nome do Produto:</label>
+  <input type="text" id="nome" name="nome" placeholder="Digite o nome do item" required>
+
+  <label for="quantidade">Quantidade:</label>
+  <input type="number" id="quantidade" name="quantidade" placeholder="Digite a quantidade" required>
+
+  <button type="submit" id="botaoSubmit">Adicionar</button>
+
+  <p id="mensagem" style="text-align:center; margin-top:10px;"></p>
+
+</form>
+
+<script>
+const API_URL = "http://localhost:8080/estoque";
+
+const form = document.getElementById('formAdicionar');
+const hospitalSelect = document.getElementById('hospital');
+const hospitalDiv = document.getElementById('hospitalSelectDiv');
+const nomeInput = document.getElementById('nome');
+const quantidadeInput = document.getElementById('quantidade');
+const categoriaInput = document.getElementById('categoria');
+const botaoSubmit = document.getElementById('botaoSubmit');
+const tituloPagina = document.getElementById('tituloPagina');
+
+let produtoEditandoId = null;
+
+// Função para pegar os parâmetros da URL
+function getParams() {
+  return new URLSearchParams(window.location.search);
+}
+
+const params = getParams();
+const hospitalFromUrl = params.get('hospital');
+const editarId = params.get('editar');
+
+// Se vier hospital pela URL, esconder o select
+if (hospitalFromUrl) {
+  hospitalSelect.value = hospitalFromUrl;
+  hospitalDiv.style.display = 'none';
+}
+
+// Se veio editar, carregar os dados
+if (editarId) {
+  produtoEditandoId = editarId;
+  carregarProdutoParaEdicao(editarId);
+}
+
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const hospital = hospitalSelect.value;
+  const categoria = categoriaInput.value;
+  const nome = nomeInput.value;
+  const quantidade = parseInt(quantidadeInput.value);
+
+  if (!hospital) {
+    alert('Selecione um hospital.');
+    return;
+  }
+
+  const item = { hospital, categoria, nome, quantidade };
+
+  try {
+    if (produtoEditandoId) {
+      // Editar produto
+      const response = await fetch(`${API_URL}/${produtoEditandoId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(item)
+      });
+
+      if (response.ok) {
+        mostrarMensagem('Item atualizado com sucesso!', false);
+      } else {
+        mostrarMensagem('Erro ao atualizar item.', true);
+      }
+    } else {
+      // Adicionar novo produto
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(item)
+      });
+
+      if (response.ok) {
+        mostrarMensagem('Item adicionado com sucesso!', false);
+        form.reset();
+      } else {
+        mostrarMensagem('Erro ao adicionar item.', true);
+      }
+    }
+
+    // Redirecionar para estoque se hospital vier da URL
+    if (hospitalFromUrl) {
+      setTimeout(() => {
+        window.location.href = `estoque.html?hospital=${encodeURIComponent(hospital)}`;
+      }, 1500);
+    }
+
+  } catch (error) {
+    console.error('Erro:', error);
+    mostrarMensagem('Erro de conexão.', true);
+  }
+});
+
+// Função para carregar produto para edição
+async function carregarProdutoParaEdicao(id) {
+  try {
+    const response = await fetch(`${API_URL}/${id}`);
+    if (!response.ok) {
+      throw new Error('Produto não encontrado.');
+    }
+
+    const produto = await response.json();
+
+    hospitalSelect.value = produto.hospital || "";
+    categoriaInput.value = produto.categoria || "";
+    nomeInput.value = produto.nome || "";
+    quantidadeInput.value = produto.quantidade || "";
+
+    // Se veio hospital pela URL, mantém o select escondido
+    if (!hospitalFromUrl) {
+      hospitalSelect.value = produto.hospital || "";
+    }
+
+    tituloPagina.textContent = 'Editar Item do Estoque';
+    botaoSubmit.textContent = 'Salvar Alterações';
+    mostrarMensagem('Edite o produto abaixo:');
+
+  } catch (error) {
+    console.error('Erro ao carregar produto:', error);
+    mostrarMensagem('Erro ao carregar produto para edição.', true);
+    // NÃO redireciona mais!
+  }
+}
+
+function mostrarMensagem(texto, erro = false) {
+  const mensagem = document.getElementById('mensagem');
+  mensagem.textContent = texto;
+  mensagem.style.color = erro ? 'red' : 'green';
+
+  setTimeout(() => {
+    mensagem.textContent = "";
+  }, 3000);
+}
+</script>
+
+</body>
+</html>
+
